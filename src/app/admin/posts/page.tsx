@@ -84,33 +84,33 @@ const AdminPostsPage: React.FC = () => {
         </Link>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-pink-100 shadow-sm">
-        <table className="min-w-full divide-y divide-pink-100 bg-white">
-          <thead className="bg-pink-50">
+      <div className="overflow-x-auto rounded-xl border border-sky-100 shadow-sm">
+        <table className="min-w-full divide-y divide-sky-100 bg-white">
+          <thead className="bg-sky-50">
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-pink-400"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-400"
               >
                 Title
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-pink-400"
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-sky-400"
               >
                 Created At
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-pink-400"
+                className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-sky-400"
               >
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-pink-100 bg-white">
+          <tbody className="divide-y divide-sky-100 bg-white">
             {posts.map((post) => (
-              <tr key={post.id} className="hover:bg-pink-50">
+              <tr key={post.id} className="hover:bg-sky-50">
                 <td className="whitespace-nowrap px-6 py-4">
                   <div className="text-sm font-medium text-slate-700">
                     {post.title}

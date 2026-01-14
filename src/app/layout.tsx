@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -23,14 +24,18 @@ type Props = {
   children: React.ReactNode;
 };
 
-const RootLayout: React.FC<Props> = (props) => {
+const RootLayout = async (props: Props) => {
   const { children } = props;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token");
+  const isLoggedIn = !!token;
+
   return (
     <html lang="ja">
       <body
-        className={`${mPlusRounded1c.className} bg-orange-50 text-slate-700`}
+        className={`${mPlusRounded1c.className} bg-sky-50 text-slate-700`}
       >
-        <Header />
+        <Header isLoggedIn={isLoggedIn} />
         <div className="mx-4 mt-4 max-w-2xl md:mx-auto">{children}</div>
       </body>
     </html>

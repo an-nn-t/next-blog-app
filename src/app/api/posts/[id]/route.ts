@@ -7,11 +7,15 @@ type RouteParams = {
   }>;
 };
 
-export const GET = async (req: NextRequest, routeParams: RouteParams) => {
-  try {
-    // パラメータプレースホルダから id を取得
-    const { id } = await routeParams.params;
+export const GET = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) => {
+  // パラメータプレースホルダから id を取得
+  const { id } = await params;
+  console.log(`[GET] /api/posts/${id} requested`);
 
+  try {
     // findUnique は id に一致する「1件」のレコードを取得するメソッド
     // もし条件に一致するレコードが存在しないときは null が戻り値となる
     const post = await prisma.post.findUnique({
@@ -38,6 +42,7 @@ export const GET = async (req: NextRequest, routeParams: RouteParams) => {
 
     // 投稿記事が存在しないときの ( post が null のときの) 処理
     if (!post) {
+      console.log(`[GET] /api/posts/${id} not found in DB`);
       return NextResponse.json(
         { error: `id='${id}'の投稿記事は見つかりませんでした` },
         { status: 404 },

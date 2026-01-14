@@ -6,10 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "placehold.jp" },
-      {
-        protocol: "https",
-        hostname: "avataaars.io",
-      },
+      { protocol: "https", hostname: "avataaars.io" },
+      { protocol: "https", hostname: "w1980.blob.core.windows.net" },
     ],
   },
 };

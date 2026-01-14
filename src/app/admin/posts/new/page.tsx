@@ -110,6 +110,30 @@ const Page: React.FC = () => {
     setNewCoverImageURL(e.target.value);
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/admin/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("アップロードに失敗しました");
+      const data = await res.json();
+      setNewCoverImageURL(data.url);
+    } catch (error) {
+      console.error(error);
+      window.alert("画像のアップロードに失敗しました");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // フォームの送信処理
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // この処理をしないとページがリロードされるので注意
@@ -224,18 +248,36 @@ const Page: React.FC = () => {
             htmlFor="coverImageURL"
             className="block font-bold text-slate-700"
           >
-            カバーイメージ (URL)
+            カバーイメージ
           </label>
-          <input
-            type="url"
-            id="coverImageURL"
-            name="coverImageURL"
-            className="w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
-            value={newCoverImageURL}
-            onChange={updateNewCoverImageURL}
-            placeholder="カバーイメージのURLを記入してください"
-            required
-          />
+          <div className="flex flex-col gap-2">
+            {newCoverImageURL && (
+              <div className="relative aspect-video w-48 overflow-hidden rounded-lg border border-sky-100 shadow-sm">
+                <img
+                  src={newCoverImageURL}
+                  alt="Preview"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-sky-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-sky-700 hover:file:bg-sky-100"
+            />
+            <div className="text-xs text-slate-400">または URL を入力:</div>
+            <input
+              type="text"
+              id="coverImageURL"
+              name="coverImageURL"
+              className="w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-sky-300 focus:ring-2 focus:ring-sky-200"
+              value={newCoverImageURL}
+              onChange={updateNewCoverImageURL}
+              placeholder="カバーイメージのURLを記入してください"
+              required
+            />
+          </div>
         </div>
 
         <div className="space-y-1">

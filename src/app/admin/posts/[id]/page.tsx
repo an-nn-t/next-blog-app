@@ -57,6 +57,13 @@ const Page: React.FC = () => {
   // コンポーネントがマウントされたとき (初回レンダリングのとき) に1回だけ実行
   useEffect(() => {
     const fetchData = async () => {
+      // IDが取得できていない場合は何もしない
+      if (!id) {
+        console.log("ID is undefined or empty");
+        return;
+      }
+      console.log(`[Admin] Fetching post data for id: ${id}`);
+
       try {
         setIsLoading(true);
 
@@ -91,9 +98,7 @@ const Page: React.FC = () => {
         const initialCategories = categoriesData.map((cat) => ({
           id: cat.id,
           name: cat.name,
-          isSelect: postData.categories.some(
-            (c) => c.category.id === cat.id,
-          ),
+          isSelect: postData.categories.some((c) => c.category.id === cat.id),
         }));
         setCheckableCategories(initialCategories);
 
@@ -141,6 +146,30 @@ const Page: React.FC = () => {
     setNewCoverImageURL(e.target.value);
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/admin/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("アップロードに失敗しました");
+      const data = await res.json();
+      setNewCoverImageURL(data.url);
+    } catch (error) {
+      console.error(error);
+      window.alert("画像のアップロードに失敗しました");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // フォームの送信処理 (更新)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -158,7 +187,7 @@ const Page: React.FC = () => {
       };
       const requestUrl = `/api/admin/posts/${id}`;
       console.log(`${requestUrl} => ${JSON.stringify(requestBody, null, 2)}`);
-      
+
       const res = await fetch(requestUrl, {
         method: "PUT",
         cache: "no-store",
@@ -237,16 +266,18 @@ const Page: React.FC = () => {
 
   return (
     <main>
-      <div className="mb-4 text-2xl font-bold">投稿記事の編集</div>
+      <div className="mb-4 text-2xl font-bold text-slate-700">
+        投稿記事の編集
+      </div>
 
       {isSubmitting && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="flex items-center rounded-lg bg-white px-8 py-4 shadow-lg">
             <FontAwesomeIcon
               icon={faSpinner}
-              className="mr-2 animate-spin text-gray-500"
+              className="mr-2 animate-spin text-sky-400"
             />
-            <div className="flex items-center text-gray-500">処理中...</div>
+            <div className="flex items-center text-slate-500">処理中...</div>
           </div>
         </div>
       )}
@@ -263,7 +294,7 @@ const Page: React.FC = () => {
             type="text"
             id="title"
             name="title"
-            className="w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
+            className="w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-sky-300 focus:ring-2 focus:ring-sky-200"
             value={newTitle}
             onChange={updateNewTitle}
             placeholder="タイトルを記入してください"
@@ -278,7 +309,7 @@ const Page: React.FC = () => {
           <textarea
             id="content"
             name="content"
-            className="h-48 w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
+            className="h-48 w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-sky-300 focus:ring-2 focus:ring-sky-200"
             value={newContent}
             onChange={updateNewContent}
             placeholder="本文を記入してください"
@@ -291,18 +322,36 @@ const Page: React.FC = () => {
             htmlFor="coverImageURL"
             className="block font-bold text-slate-700"
           >
-            カバーイメージ (URL)
+            カバーイメージ
           </label>
-          <input
-            type="url"
-            id="coverImageURL"
-            name="coverImageURL"
-            className="w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200"
-            value={newCoverImageURL}
-            onChange={updateNewCoverImageURL}
-            placeholder="カバーイメージのURLを記入してください"
-            required
-          />
+          <div className="flex flex-col gap-2">
+            {newCoverImageURL && (
+              <div className="relative aspect-video w-48 overflow-hidden rounded-lg border border-sky-100 shadow-sm">
+                <img
+                  src={newCoverImageURL}
+                  alt="Preview"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-sky-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-sky-700 hover:file:bg-sky-100"
+            />
+            <div className="text-xs text-slate-400">または URL を入力:</div>
+            <input
+              type="text"
+              id="coverImageURL"
+              name="coverImageURL"
+              className="w-full rounded-lg border-2 border-slate-200 px-2 py-1 outline-none focus:border-sky-300 focus:ring-2 focus:ring-sky-200"
+              value={newCoverImageURL}
+              onChange={updateNewCoverImageURL}
+              placeholder="カバーイメージのURLを記入してください"
+              required
+            />
+          </div>
         </div>
 
         <div className="space-y-1">
@@ -315,25 +364,29 @@ const Page: React.FC = () => {
                     id={c.id}
                     type="checkbox"
                     checked={c.isSelect}
-                    className="mt-0.5 cursor-pointer accent-pink-400"
+                    className="mt-0.5 cursor-pointer accent-sky-400"
                     onChange={() => switchCategoryState(c.id)}
                   />
-                  <span className="cursor-pointer">{c.name}</span>
+                  <span className="cursor-pointer text-slate-600">
+                    {c.name}
+                  </span>
                 </label>
               ))
             ) : (
-              <div>選択可能なカテゴリが存在しません。</div>
+              <div className="text-slate-400">
+                選択可能なカテゴリが存在しません。
+              </div>
             )}
           </div>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between pt-4">
           <button
             type="button"
             onClick={handleDelete}
             className={twMerge(
-              "rounded-full bg-rose-400 px-5 py-1 font-bold text-white hover:bg-rose-500",
-              "disabled:cursor-not-allowed",
+              "rounded-full bg-rose-400 px-5 py-2 font-bold text-white transition-colors hover:bg-rose-500",
+              "disabled:cursor-not-allowed disabled:opacity-50",
             )}
             disabled={isSubmitting}
           >
@@ -343,8 +396,8 @@ const Page: React.FC = () => {
           <button
             type="submit"
             className={twMerge(
-              "rounded-full bg-sky-400 px-5 py-1 font-bold text-white hover:bg-sky-500",
-              "disabled:cursor-not-allowed",
+              "rounded-full bg-sky-400 px-8 py-2 font-bold text-white transition-colors hover:bg-sky-500",
+              "disabled:cursor-not-allowed disabled:opacity-50",
             )}
             disabled={isSubmitting}
           >
