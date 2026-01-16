@@ -11,12 +11,26 @@ Next.js 15 (App Router) と Prisma (SQLite) を使用して構築されたブロ
   - カテゴリ別記事一覧
   - Markdown 形式での記事レンダリング
 
+  ![alt text](img/home.png)
+
 - **管理者ページ (`/admin`)**
   - ダッシュボード（記事・カテゴリ管理）
   - 記事の作成・編集・削除
   - カテゴリの作成・編集・削除
   - 画像アップロード機能
   - 認証機能（ログイン/ログアウト）
+
+- **ログイン画面 (`/login`)**
+  ![alt text](img/ログイン画面.png)
+
+- **投稿記事管理画面 (`/admin/posts`)**
+  ![alt text](img/記事投稿画面.png)
+
+- **カテゴリ編集画面 (`/admin/categories`)**
+  ![alt text](img/カテゴリ画面.png)
+
+- **投稿編集画面 (`/admin/posts/[id]`)**
+  ![alt text](img/編集画面.png)
 
 ## 🛠️ 技術スタック
 
