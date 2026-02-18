@@ -3,7 +3,7 @@
 Next.js 15 (App Router) と Prisma (SQLite) を使用して構築されたブログアプリケーションです。
 記事の閲覧、カテゴリによるフィルタリング、および管理者向けの記事作成・編集・削除機能（CMS）を備えています。
 
-## ✨ 機能
+## 機能
 
 - **公開ページ**
   - 記事一覧表示
@@ -42,7 +42,7 @@ Next.js 15 (App Router) と Prisma (SQLite) を使用して構築されたブロ
 - **Icons:** [FontAwesome](https://fontawesome.com/)
 - **Markdown:** [Marked](https://github.com/markedjs/marked) + [DOMPurify](https://github.com/cure53/DOMPurify)
 
-## 🚀 セットアップ手順
+## セットアップ手順
 
 ### 1. リポジトリのクローンと依存関係のインストール
 
@@ -80,7 +80,7 @@ npm run dev
 
 ブラウザで `http://localhost:3000` にアクセスしてください。
 
-## 🗄️ データベース開発フロー
+## データベース開発フロー
 
 `prisma/schema.prisma` を変更した場合の手順は以下の通りです：
 
@@ -99,14 +99,14 @@ npm run dev
    npx prisma db seed
    ```
 
-## 📜 利用可能なスクリプト
+## 利用可能なスクリプト
 
 - `npm run dev`: 開発サーバーを起動します（Turbopack有効）。
 - `npm run build`: 本番用にアプリケーションをビルドします。
 - `npm start`: ビルドされたアプリケーションを起動します。
 - `npm run lint`: ESLintを実行してコードをチェックします。
 
-## 📂 ディレクトリ構造
+## ディレクトリ構造
 
 ```
 src/
